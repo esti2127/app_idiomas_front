@@ -1,14 +1,35 @@
 import './App.css'
 
 import { Navbar } from './components/Navbar'
-// import { Screen_lessons } from './components/Screen_lessons'
+import { AppRoutes } from './routes/AppRoutes'
+import { UserProvider } from './contexts/UserProvider'
 
 function App() {
 
   return (
     <>
-      <Navbar />
-      {/* <Screen_lessons/> */}
+
+      <header>
+        Título o eslogan
+      </header>
+
+
+
+      <main>
+
+        <UserProvider>
+
+          <Navbar />
+
+          <AppRoutes />
+
+        </UserProvider>
+
+      </main>
+
+      <footer>
+        leyes
+      </footer>
     </>
   )
 }

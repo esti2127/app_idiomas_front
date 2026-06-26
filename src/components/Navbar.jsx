@@ -1,21 +1,52 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router'
+import { UserContext } from '../contexts/UserContext'
+import { AdminNavbarLinks } from './user/Navbars/AdminNavbarLinks'
+import { PublicNavbarLinks } from './user/Navbars/PublicNavbarLinks'
+import { UserNavbarLinks } from './user/Navbars/UserNavbarLinks'
 
 export const Navbar = () => {
+
+  const { user, role, logout } = useContext(UserContext)
+
+// useNavigate() requiere que el componente esté envuelto por <BrowserRouter>  
+const handleLogOutClick = () => {
+    logout();
+    navigate('/');
+  }
+
   return (
+
     <nav>
       <ul className="nav_bar">
-        <NavLink to="/"  className={({ isActive }) => isActive ? 'cambioColor' : ''}>
-       Lessons
-        </NavLink>
-        <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'cambioColor' : ''}>
-        Admin Dashboard
-        </NavLink>
-        <NavLink to="/profile" className={({ isActive }) => isActive ? 'cambioColor' : ''}>
-        Profile
-        </NavLink>
+
+        <li>
+          <Link to="/">
+            Home
+          </Link>
+        </li>
+
+        {!user ? (
+
+          <PublicNavbarLinks/>
+        )
+          :
+          (
+            <>
+
+              {/* to= cambiar rutas y poner las que son */}
+              {role === 'admin' && <AdminNavbarLinks onLogout={handleLogOutClick}/>}
+              {role === 'user' && <UserNavbarLinks onLogout={handleLogOutClick}/>}
+              {/* <li>
+                <Button onClick={handleLogOutClick}>
+                  Logout
+                </Button>
+              </li> */}
+            </>
+          )}
       </ul>
     </nav>
+
   )
 }
