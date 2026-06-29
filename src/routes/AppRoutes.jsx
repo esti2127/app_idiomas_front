@@ -16,8 +16,8 @@ export const AppRoutes = () => {
 
   const {user, role} = useContext(UserContext)
 
-  console.log(user)
-  console.log(role)
+  // console.log(user)
+  // console.log(role)
 
   // const [role, setRole] = useState('user')
 

@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useFetchLessonData } from '../../hooks/useFetchLessonData'
 import { MultipleChoice } from './MultipleChoice'
 import { QuestionContext } from '../../contexts/QuestionContext'
-// import { FillBlank } from './FillBlank'
+import { FillBlank } from './FillBlank'
 // import { UserContext } from '../../contexts/UserContext'
 // import { QuestionProvider } from '../../contexts/QuestionProvider'
 // import { QuestionContext } from '../../contexts/QuestionContext'
 
-export const GridQuestions = ({ id/* , handleQuestion */ }) => {
+export const GridQuestions = ({ id, type/* , handleQuestion */ }) => {
 
   const url = import.meta.env.VITE_URL_BASE_BACK
 
   const { data, error, isLoading, getData } = useFetchLessonData()
 
-  const{userSelection, handleCorrect, handleTotalScore, questionType, index, setIndex, handleQuestionType} = useContext(QuestionContext)
+  const { userSelection, handleCorrect, handleTotalScore, questionType, currentLessonNumber, setCurrentLessonNumber, handleQuestionType, handleNextQuestion, score } = useContext(QuestionContext)
 
   const [colorStatus, setColorStatus] = useState("")
 
@@ -22,87 +22,112 @@ export const GridQuestions = ({ id/* , handleQuestion */ }) => {
 
   const llamadaApi = async () => {
 
-    await getData(`${url}/lessons/questions/${id}/with_answers`, {
+    await getData(`${url}/lessons/questions/with_answers/${id}`, {
       headers: { "Authorization": `Bearer ${import.meta.env.VITE_TOKEN}` }
     })
   }
 
-  // Esto está mal
-  const currentQuestion = data?.questionsWithAnswers?.[index]
+  const allQuestions = data?.questionsWithAnswers || [];
 
-   const handleQuestion = ()=> {
+  const currentQuestion = allQuestions.find(
+    (question) => question.lesson_number === currentLessonNumber
+  );
 
-    setIndex(index + 1)
-
-  }
+  // Esto lo usamos luego en la función handleNextQuestion que tenemos en el provider
+  // const totalQuestions = data?.questionsWithAnswers?.length || 0
+  const totalQuestions = allQuestions.length;
 
   //Yo quiero mostrar el score total cuando el usuario haya finalizado la lección. 
   // Poner el score por cada pregunta es absurdo. Sacaría o 0 o 1 en todas
-  
+
 
   useEffect(() => {
 
     llamadaApi()
 
   }, [])
+  // el useEffect está atento a lo que pase con el index. Como arriba se setea, aqui lama a la funcion handle que gestiona el cambio de type 
+
+
+  useEffect(() => {
+
+    if (currentQuestion) {
+      handleQuestionType(currentQuestion.type)
+    }
+
+  }, [currentQuestion])
 
   return (
 
     <>
 
       {/* <p>{JSON.stringify(userSelection)}</p> */}
+      {/* <p>{JSON.stringify(data.questionsByType)}</p> */}
+
 
       {isLoading ? <p>Loading...</p>
 
         :
 
-
-
         <article >
 
-          {
-            (!currentQuestion) ? <p>{error.message}</p>
+          {/* {currentQuestion ? (
+            <article key={currentQuestion.id_question}>
+              <h3>{currentQuestion.type}</h3>
+              <p>{currentQuestion.question_text}</p>
 
-            :
+              {currentQuestion.answers?.map((answer) => (
+                <label key={answer.id_answer}>
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestion.id_question}`}
+                    value={answer.answer_text}
+                  />
+                  {answer.answer_text}
+                </label>
+              ))}
+            </article>
 
-            (
-                currentQuestion.type.includes(questionType) &&
+          ) : (
+            <p>{error.message}</p>
+          )} */}
 
-            (
+          {currentQuestion ? (
+            <article key={currentQuestion.id_question}>
+              <h3>{currentQuestion.type}</h3>
 
-              <>
-
-                <h3>Multiple choice questions</h3>
-                <MultipleChoice answered={answered} colorStatus={colorStatus} currentQuestion={currentQuestion} />
-
-              </>
-              
-            )
-            
-            )
-          }
-
-        
+              {currentQuestion.type === 'multiple choice' ? (
+                <MultipleChoice
+                  answered={answered}
+                  colorStatus={colorStatus}
+                  currentQuestion={currentQuestion}
+                />
+              ) : (
+                <FillBlank currentQuestion={currentQuestion} />
+              )}
+            </article>
+          ) : (
+            <p>{error?.message}</p>
+          )}
 
           <button onClick={handleCorrect}>TEST ANSWERS</button>
 
           {/* Este boton solo quiero que se muestre cuando el usuario este en la última pregunta. 
-          Es decir: el index será 9 porque en programación empezamos a contar desde el 0. Así que a la length del total de preguntas con respuestas le tendremos que restar uno para que sean iguales  */}
+          Es decir: el index será 9 porque en programación empezamos a contar desde el 0. Así que a la length del total de preguntas con respuestas le tendremos que restar uno para que sean iguales  */
+          }
 
-          {(data.questionsWithAnswers.length - 1 === index) ? (
+          {(currentLessonNumber >= totalQuestions) ? (
             <>
               <button onClick={handleTotalScore}>SHOW FINAL SCORE</button>
               <p>Score: {score}</p>
             </>
           ) : (
 
-            <button onClick={handleQuestion}>Next question</button>
+            <button onClick={() => handleNextQuestion(totalQuestions)}>Next question</button>
 
           )}
 
         </article>
-
-
 
       }
 

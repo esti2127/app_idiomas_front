@@ -29,9 +29,9 @@ export const LessonsPage = () => {
 
           {/* gestionar el error pintando el mensaje del catch del back. La interrogacion no es la solucion */}
 
-          {data.lessons.map((lesson, index) => (
+          {data.lessons.map((lesson) => (
 
-            <ButtonNumberLesson lesson={lesson} index={index} key={lesson.id_lesson} />
+            <ButtonNumberLesson lesson={lesson} key={lesson.id_lesson} />
 
           ))
 

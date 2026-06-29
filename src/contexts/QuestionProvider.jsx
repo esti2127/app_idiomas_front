@@ -11,21 +11,33 @@ export const QuestionProvider = ({ children }) => {
 
   const [questionType, setQuestionType] = useState('multiple choice')
 
-    const [index, setIndex] = useState(0)
+  const [currentLessonNumber, setCurrentLessonNumber] = useState(1)
 
 
 
 
 
-const handleQuestionType = () => {
-  // cuando se terminen las preguntas de type m.c. que pinte las de f.b.
-  if(currentQuestion.type.includes("Fill in the blank")){
-     setQuestionType("Fill in the blank")
+
+
+  const handleNextQuestion = (totalQuestions) => {
+
+    if (currentLessonNumber < totalQuestions) {
+    setCurrentLessonNumber(prev => prev + 1)
   }
 
-}
+  }
 
 
+
+const handleQuestionType = (string) => {
+
+  switch (string){
+    case "Fill in the blank":
+      setQuestionType("Fill in the blank")
+    break;
+  }
+  
+  }
 
 
   const handleChosenAnswer = (ev, answer, id_question) => {
@@ -35,7 +47,7 @@ const handleQuestionType = () => {
     // console.log(answer)
     // console.log(id_question)
 
-    setuserSelection(answer)
+    setuserSelection(answer) 
 
   }
 
@@ -107,9 +119,10 @@ const handleQuestionType = () => {
       handleCorrect, 
       handleTotalScore, 
       questionType,
-      index, 
-      setIndex,
-      handleQuestionType}
+      currentLessonNumber, 
+      setCurrentLessonNumber,
+      handleQuestionType,
+      handleNextQuestion}
     }>
 
       {children}
