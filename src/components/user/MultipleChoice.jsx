@@ -28,11 +28,11 @@ export const MultipleChoice = ({ currentQuestion, colorStatus, answered }) => {
                 <input
                  className={(answered ? (answer.is_correct ? "correct-answer-text" : "incorrect-answer-text") : "")}
                   type="radio"
-                  name={'q_' + currentQuestion.id_question}
+                  name="answer"
                   checked={userSelection?.answer_text === answer.answer_text}
                   disabled={isEvaluated}
                   value={answer.answer_text}
-                  id={'ans_' + answer.id_answer}
+                  id="chosenAnswered"
                   onChange={(ev) => handleChosenAnswer(ev, answer, currentQuestion.id_question)} 
                   />
                 {answer.answer_text}

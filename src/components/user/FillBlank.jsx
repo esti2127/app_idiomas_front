@@ -1,10 +1,10 @@
 import React from 'react'
 
-export const FillBlank = ({question}) => {
+export const FillBlank = ({currentQuestion}) => {
   return (
 
     <>
-    <div>{question?.question_text}</div>
+    <p>{currentQuestion.question_text}</p>
 
     <input type="text" placeholder="Write your answer here"/>
 

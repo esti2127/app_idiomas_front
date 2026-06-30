@@ -15,6 +15,7 @@ export const LessonsDetailsPage = () => {
 
   useEffect(() => {
 
+    // Aquí no creo que tenga sentido usar una query que me trae toda la información si solo necesito los datos de la leccion. 
     getData(`${import.meta.env.VITE_URL_BASE_BACK}/lessons/with_data/${id}`, {
       headers: { "Authorization": `Bearer ${import.meta.env.VITE_TOKEN}` }
     })

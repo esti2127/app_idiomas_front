@@ -15,23 +15,24 @@ export const GridQuestions = ({ id, type/* , handleQuestion */ }) => {
 
   const { userSelection, handleCorrect, handleTotalScore, questionType, currentLessonNumber, setCurrentLessonNumber, handleQuestionType, handleNextQuestion, score } = useContext(QuestionContext)
 
-  const [colorStatus, setColorStatus] = useState("")
+  // const [colorStatus, setColorStatus] = useState("")
 
-  const [answered, setAnswered] = useState(false)
+  // const [answered, setAnswered] = useState(false)
 
 
   const llamadaApi = async () => {
 
-    await getData(`${url}/lessons/questions/with_answers/${id}`, {
+    // te faltaba el type del back
+
+    await getData(`${url}/lessons/questions/with_answers/${id}?type=multiple%20choice`, {
       headers: { "Authorization": `Bearer ${import.meta.env.VITE_TOKEN}` }
     })
   }
 
   const allQuestions = data?.questionsWithAnswers || [];
-
-  const currentQuestion = allQuestions.find(
-    (question) => question.lesson_number === currentLessonNumber
-  );
+  // console.log(allQuestions)
+  //el array empieza en la posición 0 y el estado inicial de currentLessonNumber es 1 
+  const currentQuestion = allQuestions[currentLessonNumber - 1];
 
   // Esto lo usamos luego en la función handleNextQuestion que tenemos en el provider
   // const totalQuestions = data?.questionsWithAnswers?.length || 0
@@ -45,17 +46,18 @@ export const GridQuestions = ({ id, type/* , handleQuestion */ }) => {
 
     llamadaApi()
 
-  }, [])
+    // para que la API vuelva a ejecutarse cada vez que cambie el tipo de pregunta
+  }, [questionType])
   // el useEffect está atento a lo que pase con el index. Como arriba se setea, aqui lama a la funcion handle que gestiona el cambio de type 
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (currentQuestion) {
-      handleQuestionType(currentQuestion.type)
-    }
+  //   if (currentQuestion) {
+  //     handleQuestionType(currentQuestion.type)
+  //   }
 
-  }, [currentQuestion])
+  // }, [currentQuestion])
 
   return (
 
@@ -71,35 +73,14 @@ export const GridQuestions = ({ id, type/* , handleQuestion */ }) => {
 
         <article >
 
-          {/* {currentQuestion ? (
-            <article key={currentQuestion.id_question}>
-              <h3>{currentQuestion.type}</h3>
-              <p>{currentQuestion.question_text}</p>
-
-              {currentQuestion.answers?.map((answer) => (
-                <label key={answer.id_answer}>
-                  <input
-                    type="radio"
-                    name={`question-${currentQuestion.id_question}`}
-                    value={answer.answer_text}
-                  />
-                  {answer.answer_text}
-                </label>
-              ))}
-            </article>
-
-          ) : (
-            <p>{error.message}</p>
-          )} */}
-
           {currentQuestion ? (
             <article key={currentQuestion.id_question}>
               <h3>{currentQuestion.type}</h3>
 
               {currentQuestion.type === 'multiple choice' ? (
                 <MultipleChoice
-                  answered={answered}
-                  colorStatus={colorStatus}
+                  // answered={answered}
+                  // colorStatus={colorStatus}
                   currentQuestion={currentQuestion}
                 />
               ) : (

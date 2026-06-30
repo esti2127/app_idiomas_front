@@ -22,21 +22,38 @@ export const QuestionProvider = ({ children }) => {
   const handleNextQuestion = (totalQuestions) => {
 
     if (currentLessonNumber < totalQuestions) {
-    setCurrentLessonNumber(prev => prev + 1)
+      // Si aún quedan preguntas en el bloque actual, avanzamos a la siguiente
+      setCurrentLessonNumber(prev => prev + 1)
+      return;
+    } else {
+
+      switch (questionType) {
+        case 'multiple choice':
+          setQuestionType('Fill in the blank');
+          setCurrentLessonNumber(prev => prev + 1);
+          break;
+
+        case 'Fill in the blank':
+          // De momento piensa si la función del score iría aquí seguro
+          // handleTotalScore()
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
-  }
 
 
+  const handleQuestionType = (string) => {
 
-const handleQuestionType = (string) => {
+    switch (string) {
+      case "Fill in the blank":
+        setQuestionType("Fill in the blank")
+        break;
+    }
 
-  switch (string){
-    case "Fill in the blank":
-      setQuestionType("Fill in the blank")
-    break;
-  }
-  
   }
 
 
@@ -47,15 +64,15 @@ const handleQuestionType = (string) => {
     // console.log(answer)
     // console.log(id_question)
 
-    setuserSelection(answer) 
+    setuserSelection(answer)
 
   }
 
-// lo de los colores está mal. En el css los cambios se aplican sobre input type="radio"
+  // lo de los colores está mal. En el css los cambios se aplican sobre input type="radio"
 
- const handleCorrect = () => {
+  const handleCorrect = () => {
 
-   
+
 
     if (userSelection && Object.keys(userSelection).length > 0) {
 
@@ -96,14 +113,14 @@ const handleQuestionType = (string) => {
 
 
   const handleTotalScore = () => {
-  
-      // setScore(prev => prev+1)
-  
-      const totalCorrectAnswers = Object.keys(correctAnswer).length
-  
-      setScore(totalCorrectAnswers)
-  
-    }
+
+    // setScore(prev => prev+1)
+
+    const totalCorrectAnswers = Object.keys(correctAnswer).length
+
+    setScore(totalCorrectAnswers)
+
+  }
 
 
 
@@ -111,18 +128,20 @@ const handleQuestionType = (string) => {
 
   return (
     <QuestionContext.Provider value={
-      {score,
-      setScore,
-      userSelection,
-      setuserSelection,
-      handleChosenAnswer, 
-      handleCorrect, 
-      handleTotalScore, 
-      questionType,
-      currentLessonNumber, 
-      setCurrentLessonNumber,
-      handleQuestionType,
-      handleNextQuestion}
+      {
+        score,
+        setScore,
+        userSelection,
+        setuserSelection,
+        handleChosenAnswer,
+        handleCorrect,
+        handleTotalScore,
+        questionType,
+        currentLessonNumber,
+        setCurrentLessonNumber,
+        handleQuestionType,
+        handleNextQuestion
+      }
     }>
 
       {children}
